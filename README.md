@@ -17,11 +17,11 @@ The approach treats it as **extractive question answering**. The sentiment word 
 - **Decoding.** Choose the tweet-token pair *(i ≤ j)* that maximises `start[i] + end[j]`, then slice the original tweet with the character offsets.
 - **Metric.** The competition's word-level Jaccard score, computed on the full validation split. Results are reported overall and per sentiment.
 
-### A labelling bug worth knowing about
+### Design note: spans come only from tweet tokens
 
-With pair inputs, the question tokens also carry character offsets, but those offsets point into the *sentiment word*, not the tweet. The first version of this project searched every token with a non-zero offset. So whenever the answer started at character 0 of the tweet, the label landed on the sentiment token instead, and decoding could likewise return a slice taken with question offsets.
+With pair inputs, the question tokens (the sentiment word) also carry character offsets, but those offsets index into the *sentiment word*, not the tweet. Both labelling and decoding are therefore restricted to context tokens (`sequence_ids == 1`). This keeps a span that starts at the first character of a tweet labelled on the tweet's first token, and it guarantees that predictions are always substrings of the tweet.
 
-Labelling and decoding are now restricted to context tokens (`sequence_ids == 1`). The tests in `tests/` cover this with a RoBERTa-style tokenizer built on the fly, so they run offline.
+The tests in `tests/` check this with a RoBERTa-style tokenizer built on the fly, so they run offline.
 
 ## Usage
 
