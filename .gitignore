@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+.idea/
+.vscode/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Competition data (download from Kaggle) and run outputs
+data/
+outputs/
+submission*.csv
